@@ -17,7 +17,7 @@ namespace CarRenting
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<CarRentingDbContext>();
             builder.Services.AddControllersWithViews();
-
+            
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
