@@ -11,6 +11,7 @@ namespace CarRenting.Models.Car
 
         public string Model { get; set; }
 
+        [Display(Name = "Image URL")]
         public string ImageUrl { get; set; }
 
         public string Description { get; set; }
