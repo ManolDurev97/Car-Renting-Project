@@ -6,6 +6,7 @@
 
     public class CarRentingDbContext : IdentityDbContext
     {
+        
         public CarRentingDbContext(DbContextOptions<CarRentingDbContext> options)
             : base(options)
         {

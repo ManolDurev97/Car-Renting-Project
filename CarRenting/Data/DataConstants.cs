@@ -3,8 +3,11 @@
     public class DataConstants
     {
         public const int CarBrandMaxLenght = 20;
+        public const int CarBrandMinLenght = 2;
         public const int CarModelMaxLenght = 40;
+        public const int CarModelMinLenght = 2;
         public const int CarMinYearValue = 2000;
         public const int CarMaxYearValue = 2100;
+        public const int DescriptionMinLenght = 10;
     }
 }

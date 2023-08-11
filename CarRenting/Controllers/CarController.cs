@@ -1,16 +1,34 @@
-﻿using CarRenting.Models.Car;
+﻿using CarRenting.Data;
+using CarRenting.Models.Car;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRenting.Controllers
 {
     public class CarController : Controller
     {
-        public IActionResult Add() => View();
+        private readonly CarRentingDbContext data;
+
+		public CarController(CarRentingDbContext data)
+		  => this.data = data;
+
+
+        public IActionResult Add() => View(new AddCarFormModel
+        {
+            Categories = GetCarCategory()
+        });
+
 
         [HttpPost]
         public IActionResult Add(AddCarFormModel car)
         {
-            var currCar = new AddCarFormModel()
+            if (!ModelState.IsValid)
+            {
+                car.Categories = GetCarCategory();
+
+				return View(car);
+			}
+
+			var currCar = new AddCarFormModel()
             {
                 Id = car.Id,
                 Brand = car.Brand,
@@ -20,7 +38,17 @@ namespace CarRenting.Controllers
                 Year = car.Year,
                 CategoryId = car.CategoryId
             };
-            return View(car);
+            return RedirectToAction("Index","Home");
         }
+
+        public IEnumerable<CarCategoryViewModel> GetCarCategory()
+            => data
+            .Categories
+            .Select(c => new CarCategoryViewModel 
+            { 
+                Id = c.Id,
+                Name = c.Name
+            })
+            .ToList();
     }
 }
