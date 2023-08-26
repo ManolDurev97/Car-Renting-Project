@@ -1,0 +1,18 @@
+﻿@model IEnumerable<CarListingViweModel>
+	
+	<div class="row">
+
+		@foreach(var car in Model)
+		{
+			<div class="col-md-4">
+				<div class="card" style="width: 18rem;">
+					<img src="@car.ImageUrl" class="card-img-top" alt="@car.Brand @car.Model - @car.Year (@car.Category)">
+						<div class="card-body">
+								<h5 class="card-title">@car.Year @car.Brand @car.Model (@car.Category)</h5>
+								<p class="card-text"></p>
+								<a href="#" class="btn btn-primary">View More</a>
+						</div>
+				</div>
+			</div>
+		}
+	</div>

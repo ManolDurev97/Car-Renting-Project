@@ -1,4 +1,5 @@
 ﻿using CarRenting.Data;
+using CarRenting.Data.Models;
 using CarRenting.Models.Car;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,11 @@ namespace CarRenting.Controllers
         [HttpPost]
         public IActionResult Add(AddCarFormModel car)
         {
+            if (!data.Categories.Any(c => c.Id == car.CategoryId))
+            {
+                ModelState.AddModelError(nameof(car.CategoryId), "Category does not exist");
+            }
+
             if (!ModelState.IsValid)
             {
                 car.Categories = GetCarCategory();
@@ -28,7 +34,7 @@ namespace CarRenting.Controllers
 				return View(car);
 			}
 
-			var currCar = new AddCarFormModel()
+			var currCar = new Car()
             {
                 Id = car.Id,
                 Brand = car.Brand,
@@ -38,7 +44,10 @@ namespace CarRenting.Controllers
                 Year = car.Year,
                 CategoryId = car.CategoryId
             };
-            return RedirectToAction("Index","Home");
+
+            data.Cars.Add(currCar);
+            data.SaveChanges();
+            return RedirectToAction(nameof(All));
         }
 
         public IEnumerable<CarCategoryViewModel> GetCarCategory()
@@ -50,5 +59,22 @@ namespace CarRenting.Controllers
                 Name = c.Name
             })
             .ToList();
+
+        public IActionResult All()
+        {
+            var cars = data.Cars
+                .OrderByDescending(cars => cars.Id)
+                .Select(c => new CarListingViweModel() 
+                {
+                  Id = c.Id,
+                  Model = c.Model,
+                  Brand = c.Brand,
+                  ImageUrl= c.ImageUrl,
+                  Year= c.Year,
+                  Category = c.Category.Name
+                })
+                .ToList();
+            return View(cars);
+        }
     }
 }
