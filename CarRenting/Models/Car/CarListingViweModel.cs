@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
-
-namespace CarRenting.Models.Car
+﻿namespace CarRenting.Models.Car
 {
-	public class CarListingViweModel
+    using System.ComponentModel.DataAnnotations;
+    using System.Xml.Linq;
+
+    public class CarListingViweModel
 	{
 
 		public int Id { get; set; }

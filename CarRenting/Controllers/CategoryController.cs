@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace CarRenting.Controllers
+﻿namespace CarRenting.Controllers
 {
+    using Microsoft.AspNetCore.Mvc;
+
     public class CategoryController : Controller
     {
 

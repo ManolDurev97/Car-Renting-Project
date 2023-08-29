@@ -3,6 +3,7 @@
     using CarRenting.Data;
     using CarRenting.Models;
     using CarRenting.Models.Car;
+    using CarRenting.Models.Home;
     using Microsoft.AspNetCore.Mvc;
     using System.Diagnostics;
     public class HomeController : Controller
@@ -19,21 +20,26 @@
 
         public IActionResult Index()
         {
-
+            var totalCars = data.Cars.Count();
             var cars = data.Cars
                 .OrderByDescending(cars => cars.Id)
-                .Select(c => new CarListingViweModel()
+                .Select(c => new CarIndexViewModel()
                 {
                     Id = c.Id,
                     Model = c.Model,
                     Brand = c.Brand,
                     ImageUrl = c.ImageUrl,
-                    Year = c.Year,
-                    Category = c.Category.Name
+                    Year = c.Year
                 })
                 .Take(3)
                 .ToList();
-            return View(cars);
+
+            return View(new IndexViewModel()
+            {
+                TotalCars = totalCars,
+                Cars = cars
+
+            });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,10 +1,10 @@
-﻿using CarRenting.Data;
-using CarRenting.Data.Models;
-using CarRenting.Models.Car;
-using Microsoft.AspNetCore.Mvc;
-
-namespace CarRenting.Controllers
+﻿namespace CarRenting.Controllers
 {
+    using CarRenting.Data;
+    using CarRenting.Data.Models;
+    using CarRenting.Models.Car;
+    using Microsoft.AspNetCore.Mvc;
+
     public class CarController : Controller
     {
         private readonly CarRentingDbContext data;

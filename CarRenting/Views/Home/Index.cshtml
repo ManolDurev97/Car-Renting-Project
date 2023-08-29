@@ -1,28 +1,28 @@
-﻿@model List<CarListingViweModel>
+﻿@model IndexViewModel
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
 @{
-
-    var firstCar = Model.Any() ? Model[0] : null;
-    var secondCar = Model.Count > 1 ? Model[1] : null;
-    var thirdCar = Model.Count > 2 ? Model[2] : null;
-
+    var cars = Model.Cars;
+    var firstCar = cars.Any() ? cars[0] : null;
+    var secondCar = cars.Count > 1 ? cars[1] : null;
+    var thirdCar = cars.Count > 2 ? cars[2] : null;
 }
 
-@if (!Model.Any())
+@if (!cars.Any())
 {
     //ako nqma koli 
 }
-<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+
+<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel ">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
         <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
         <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
     </div>
-    <div class="carousel-inner">
+    <div class="carousel-inner h-50">
         <div class="carousel-item active">
             <img src="@firstCar.ImageUrl" class="d-block w-100" alt="@firstCar.Brand @firstCar.Model">
             <div class="carousel-caption d-none d-md-block">
@@ -50,4 +50,17 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
     </button>
+</div>
+<div class="mt-3">
+    <div class="row text-center">
+        <h2 class="col-md-4">
+            @Model.TotalCars Cars
+        </h2>
+        <h2 class="col-md-4">
+            @Model.TotalUsers Users
+        </h2>
+        <h2 class="col-md-4">
+            @Model.TotalRents Rents
+        </h2>
+    </div>
 </div>

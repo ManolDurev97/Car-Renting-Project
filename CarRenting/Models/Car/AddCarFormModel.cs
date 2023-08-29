@@ -1,10 +1,10 @@
-﻿using CarRenting.Data;
-
-namespace CarRenting.Models.Car
+﻿namespace CarRenting.Models.Car
 {
+    using CarRenting.Data;
+
     using CarRenting.Data.Models;
     using System.ComponentModel.DataAnnotations;
-    using static DataConstants;
+    using static Data.DataConstants;
 
 	public class AddCarFormModel
     {
