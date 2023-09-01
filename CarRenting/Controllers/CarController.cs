@@ -1,6 +1,7 @@
 ﻿namespace CarRenting.Controllers
 {
     using CarRenting.Data;
+    using System.Linq;
     using CarRenting.Data.Models;
     using CarRenting.Models.Car;
     using Microsoft.AspNetCore.Mvc;
@@ -60,9 +61,26 @@
             })
             .ToList();
 
-        public IActionResult All()
+        public IActionResult All(string brand 
+            ,string searchTerm 
+            ,CarSortingType sorting)
         {
-            var cars = data.Cars
+            var carsQuery = data.Cars.AsQueryable();
+
+            if (!string.IsNullOrEmpty(brand))
+            {
+                carsQuery = carsQuery.Where(c => c.Brand == brand);
+            }
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                carsQuery = carsQuery.Where(c => 
+                c.Brand.ToLower().Contains(searchTerm.ToLower())||
+                c.Model.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+           
+            var cars = carsQuery
                 .OrderByDescending(cars => cars.Id)
                 .Select(c => new CarListingViweModel() 
                 {
@@ -74,7 +92,29 @@
                   Category = c.Category.Name
                 })
                 .ToList();
-            return View(cars);
+
+            carsQuery = sorting switch
+            {
+                CarSortingType.Year => carsQuery.OrderByDescending(c => c.Year),
+                CarSortingType.BrandAndModel => carsQuery.OrderBy(c => c.Brand).ThenBy(c => c.Model),
+                CarSortingType.DataCreated or _ => carsQuery.OrderBy(c => c.Year)
+            };
+
+            var carBrands = data
+                .Cars
+                .Select(c => c.Brand)
+                .Distinct()
+                .ToList();
+
+			return View(new AllCarsSearchModel 
+            {
+                Brand = brand,
+                Brands = carBrands,
+                Cars = cars,
+                SearchTerm = searchTerm,
+                Sorting = sorting
+                
+            });
         }
     }
 }
