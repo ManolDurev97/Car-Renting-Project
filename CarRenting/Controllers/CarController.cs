@@ -61,27 +61,31 @@
             })
             .ToList();
 
-        public IActionResult All(string brand 
-            ,string searchTerm 
-            ,CarSortingType sorting)
+        public IActionResult All([FromQuery]AllCarsSearchModel query)
         {
             var carsQuery = data.Cars.AsQueryable();
 
-            if (!string.IsNullOrEmpty(brand))
+            if (!string.IsNullOrEmpty(query.Brand))
             {
-                carsQuery = carsQuery.Where(c => c.Brand == brand);
+                carsQuery = carsQuery.Where(c => c.Brand == query.Brand);
             }
 
-            if (!string.IsNullOrEmpty(searchTerm))
+            if (!string.IsNullOrEmpty(query.SearchTerm))
             {
                 carsQuery = carsQuery.Where(c => 
-                c.Brand.ToLower().Contains(searchTerm.ToLower())||
-                c.Model.ToLower().Contains(searchTerm.ToLower()));
+                c.Brand.ToLower().Contains(query.SearchTerm.ToLower())||
+                c.Model.ToLower().Contains(query.SearchTerm.ToLower()));
             }
 
-           
-            var cars = carsQuery
-                .OrderByDescending(cars => cars.Id)
+			carsQuery = query.Sorting switch
+			{
+				CarSortingType.Year => carsQuery.OrderByDescending(c => c.Year),
+				CarSortingType.BrandAndModel => carsQuery.OrderBy(c => c.Brand).ThenBy(c => c.Model),
+				CarSortingType.DataCreated => carsQuery.OrderByDescending(c => c.Id),
+				_ => carsQuery.OrderBy(c => c.Id)
+			};
+
+			var cars = carsQuery
                 .Select(c => new CarListingViweModel() 
                 {
                   Id = c.Id,
@@ -93,28 +97,17 @@
                 })
                 .ToList();
 
-            carsQuery = sorting switch
-            {
-                CarSortingType.Year => carsQuery.OrderByDescending(c => c.Year),
-                CarSortingType.BrandAndModel => carsQuery.OrderBy(c => c.Brand).ThenBy(c => c.Model),
-                CarSortingType.DataCreated or _ => carsQuery.OrderBy(c => c.Year)
-            };
-
             var carBrands = data
                 .Cars
                 .Select(c => c.Brand)
                 .Distinct()
+                .OrderBy(br =>br)
                 .ToList();
 
-			return View(new AllCarsSearchModel 
-            {
-                Brand = brand,
-                Brands = carBrands,
-                Cars = cars,
-                SearchTerm = searchTerm,
-                Sorting = sorting
-                
-            });
+            query.Brands = carBrands;
+            query.Cars = cars;
+
+			return View(query);
         }
     }
 }
