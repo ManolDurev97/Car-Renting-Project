@@ -1,6 +1,7 @@
 ﻿namespace CarRenting.Data
 {
     using CarRenting.Data.Models;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,8 @@
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<Dealer> Dealers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder
@@ -25,16 +28,33 @@
                 .HasForeignKey(x => x.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder
+                .Entity<Car>()
+                .HasOne(x => x.Dealer)
+                .WithMany(x => x.Cars)
+                .HasForeignKey(x => x.DealerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .Entity<Dealer>()
+                .HasOne<IdentityUser>()
+                .WithOne()
+                .HasForeignKey<Dealer>(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             base.OnModelCreating(builder);
 
             builder.Entity<Category>().HasData(
                 new Category() { Id = 1 , Name = "Economy" },
-                new Category() { Id = 2 , Name = "Compact" },
-                new Category() { Id = 3 , Name = "Full Size-Wagon" },
-                new Category() { Id = 4 , Name = "SUV" },
-                new Category() { Id = 5 , Name = "Minivan" },
-                new Category() { Id = 6 , Name = "luxury" },
-                new Category() { Id = 7 , Name = "Cargo" }
+                new Category() { Id = 2 , Name = "Electric" },
+                new Category() { Id = 3 , Name = "Mini" },
+                new Category() { Id = 4 , Name = "Minivan" },
+                new Category() { Id = 5 , Name = "Sport" },
+                new Category() { Id = 6 , Name = "SUV" },
+                new Category() { Id = 7 , Name = "Luxury" },
+                new Category() { Id = 8 , Name = "Super Sport" },
+                new Category() { Id = 9 , Name = "Luxury SUV" },
+                new Category() { Id = 10 , Name = "Ultra Luxury" }
                 );
         }
         

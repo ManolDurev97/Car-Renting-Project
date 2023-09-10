@@ -9,5 +9,10 @@
         public const int CarMinYearValue = 2000;
         public const int CarMaxYearValue = 2100;
         public const int DescriptionMinLenght = 10;
+
+        public const int CategoryNameMaxLenght = 30;
+
+        public const int DealerNameMaxLenght = 30;
+        public const int DealerPhoneNumberMaxLenght = 30;
     }
 }

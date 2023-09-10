@@ -65,6 +65,8 @@
         {
             var carsQuery = data.Cars.AsQueryable();
 
+            var countCar = carsQuery.Count();
+
             if (!string.IsNullOrEmpty(query.Brand))
             {
                 carsQuery = carsQuery.Where(c => c.Brand == query.Brand);
@@ -86,6 +88,8 @@
 			};
 
 			var cars = carsQuery
+                .Skip((query.CurrentPage - 1) * AllCarsSearchModel.CarPerPage)
+                .Take(AllCarsSearchModel.CarPerPage)
                 .Select(c => new CarListingViweModel() 
                 {
                   Id = c.Id,
@@ -104,6 +108,7 @@
                 .OrderBy(br =>br)
                 .ToList();
 
+            query.TotalCar = countCar; 
             query.Brands = carBrands;
             query.Cars = cars;
 

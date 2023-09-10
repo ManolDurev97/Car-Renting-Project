@@ -28,5 +28,10 @@
 
         public Category Category { get; set; }
 
+
+        public int DealerId { get; set; }
+
+        public Dealer Dealer { get; set; }
+
     }
 }
