@@ -11,7 +11,7 @@
     var thirdCar = cars.Count > 2 ? cars[2] : null;
 }
 
-@if (cars.Count != 0)
+@if (cars.Count >= 3)
 {
     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel ">
         <div class="carousel-indicators">
@@ -62,6 +62,8 @@
         </div>
     </div>
 }
+@if (cars.Count < 3)
+{  
     <div class="jumbotron">
         <h1 class="display-4">Welcome to the best place for renting cars!</h1>
         <p class="lead">There are no cars in the system currently available so why don't you just add one?</p>
@@ -70,5 +72,6 @@
             <a asp-controller="Cars" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Car</a>
         </p>
     </div>
+}
 
 

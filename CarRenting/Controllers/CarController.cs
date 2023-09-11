@@ -5,6 +5,8 @@
     using CarRenting.Data.Models;
     using CarRenting.Models.Car;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authorization;
+    using System.Security.Claims;
 
     public class CarController : Controller
     {
@@ -14,15 +16,42 @@
 		  => this.data = data;
 
 
-        public IActionResult Add() => View(new AddCarFormModel
+        [Authorize]
+        public IActionResult Add()
         {
-            Categories = GetCarCategory()
-        });
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var userIsDealer = data.Dealers.Any(d => d.UserId == userId);
+
+            if (!userIsDealer)
+            {
+                return RedirectToAction("Create", "Dealers");
+            }
+
+            return View(new AddCarFormModel
+            {
+                Categories = GetCarCategory()
+            });
+        }
 
 
         [HttpPost]
+        [Authorize]
         public IActionResult Add(AddCarFormModel car)
         {
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+			var dealerId = data.Dealers
+                .Where(u => u.UserId == userId)
+                .Select(d => d.Id)
+                .FirstOrDefault();
+
+            if (dealerId == 0)
+            {
+                return RedirectToAction();
+            }
+
             if (!data.Categories.Any(c => c.Id == car.CategoryId))
             {
                 ModelState.AddModelError(nameof(car.CategoryId), "Category does not exist");
@@ -43,7 +72,8 @@
                 Description = car.Description,
                 ImageUrl = car.ImageUrl,
                 Year = car.Year,
-                CategoryId = car.CategoryId
+                CategoryId = car.CategoryId,
+                DealerId = dealerId
             };
 
             data.Cars.Add(currCar);
