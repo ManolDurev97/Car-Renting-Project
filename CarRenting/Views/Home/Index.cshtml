@@ -48,15 +48,22 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-    <div class="mt-3 p-3 mb-2 bg-secondary text-white">
+
+        
+        <div class="col-12 text-center mt-3">
+            <button class="btn btn-primary" id="btn-statistics">Show Statistics</button>
+        </div>
+    
+
+    <div class="mt-3 p-3 mb-2 bg-secondary text-white d-none" id="statistics">
         <div class="row text-center">
-            <h2 class="col-md-4">
+            <h2 class="col-md-4" id="total-cars">
                 @Model.TotalCars Cars
             </h2>
-            <h2 class="col-md-4">
+            <h2 class="col-md-4" id="total-users">
                 @Model.TotalUsers Users
             </h2>
-            <h2 class="col-md-4">
+            <h2 class="col-md-4" id="total-rents">
                 @Model.TotalRents Rents
             </h2>
         </div>
@@ -72,6 +79,20 @@
             <a asp-controller="Cars" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Car</a>
         </p>
     </div>
+}
+
+@section Scripts
+{
+    <script>
+        $('#btn-statistics').on('click', ev =>
+        {
+            $('#statistics').removeClass('d-none');
+
+            var button = document.getElementById("btn-statistics");
+            button.style.display = "none";
+           
+        })
+    </script>
 }
 
 
