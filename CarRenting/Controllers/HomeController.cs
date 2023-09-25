@@ -4,26 +4,30 @@
     using CarRenting.Models;
     using CarRenting.Models.Car;
     using CarRenting.Models.Home;
-    using Microsoft.AspNetCore.Mvc;
-    using System.Diagnostics;
+	using CarRenting.Services.Statistics;
+	using Microsoft.AspNetCore.Mvc;
+	using System.Diagnostics;
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
         private readonly CarRentingDbContext data;
 
-        public HomeController(CarRentingDbContext data , ILogger<HomeController> logger)
+		private readonly IStatisticsService statistics;
+
+		public HomeController(
+            CarRentingDbContext data,
+            ILogger<HomeController> logger,
+            IStatisticsService statistics)
         {
             this.data = data;
             _logger = logger;
+            this.statistics = statistics;
         }
 
         public IActionResult Index()
         {
-            var totalCars = data.Cars.Count();
-            var totalUsers = data.Users.Count();
-
-            var cars = data.Cars
+           var cars = data.Cars
                 .OrderByDescending(cars => cars.Id)
                 .Select(c => new CarIndexViewModel()
                 {
@@ -36,10 +40,12 @@
                 .Take(3)
                 .ToList();
 
+            var totalStatistics = statistics.Total();
+
             return View(new IndexViewModel()
             {
-                TotalCars = totalCars,
-                TotalUsers = totalUsers,
+                TotalCars = totalStatistics.TotalCars,
+                TotalUsers = totalStatistics.TotalUsers,
                 Cars = cars
 
             });

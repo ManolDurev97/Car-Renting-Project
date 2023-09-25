@@ -7,6 +7,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
     using System.Security.Claims;
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
     public class CarController : Controller
     {
@@ -72,6 +73,7 @@
                 Description = car.Description,
                 ImageUrl = car.ImageUrl,
                 Year = car.Year,
+                IsPublic = true,
                 CategoryId = car.CategoryId,
                 DealerId = dealerId
             };
@@ -118,6 +120,7 @@
 			};
 
 			var cars = carsQuery
+                .Where(c => c.IsPublic == true)
                 .Skip((query.CurrentPage - 1) * AllCarsSearchModel.CarPerPage)
                 .Take(AllCarsSearchModel.CarPerPage)
                 .Select(c => new CarListingViweModel() 
@@ -144,5 +147,54 @@
 
 			return View(query);
         }
-    }
+
+        [Authorize]
+        public IActionResult Mine()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+            var dealerId = data.Dealers
+                .Where(u => u.UserId == userId)
+                .Select(d => d.Id)
+                .FirstOrDefault();
+
+            var cars = data.Cars
+                .Where(c => c.DealerId == dealerId && c.IsPublic == true)
+                .Select(c => new CarListingViweModel()
+                {
+                    Id = c.Id,
+                    Model = c.Model,
+                    Brand = c.Brand,
+                    ImageUrl = c.ImageUrl,
+                    Year = c.Year,
+                    Category = c.Category.Name
+                })
+                .ToList();
+
+            return View(cars);
+        }
+
+        public IActionResult Edit()
+        {
+            return View();
+        }
+
+		public IActionResult Delete(int id)
+		{
+            
+            var currCar = data.Cars.FirstOrDefault(c => c.Id == id);
+
+            if (currCar != null)
+            {
+                currCar.IsPublic = false;
+
+                data.SaveChanges();
+            }
+            
+            
+            return RedirectToAction("Mine", "Car");
+		}
+
+	}
 }

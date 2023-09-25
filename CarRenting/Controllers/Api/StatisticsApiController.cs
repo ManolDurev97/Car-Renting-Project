@@ -3,7 +3,6 @@
 	using CarRenting.Data;
 	using CarRenting.Models.Api.Statistics;
 	using Microsoft.AspNetCore.Mvc;
-	using System.Security.Cryptography.X509Certificates;
 
 	[ApiController]
 	[Route("api/statistics")]

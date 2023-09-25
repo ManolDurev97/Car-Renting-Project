@@ -1,0 +1,23 @@
+﻿@model IEnumerable<CarListingViweModel>
+
+@{
+	ViewData["Title"] = "My Cars";
+}
+
+<div class="row">
+	@foreach (var car in Model)
+	{
+		<div class="col-md-3 mb-3">
+			<div class="card" style="width: 18rem;">
+				<img src="@car.ImageUrl" class="card-img-top" alt="@car.Brand @car.Model - @car.Year (@car.Category)">
+				<div class="card-body">
+					<h5 class="card-title">@car.Year @car.Brand @car.Model (@car.Category)</h5>
+					<p class="card-text"></p>
+					<a href="#" class="btn btn-primary">View More</a>
+					<a href="@Url.Action("Edit", "Car", new { id = car.Id })" class="btn btn-warning">Edit</a>
+					<a href="@Url.Action("Delete", "Car", new { id = car.Id })" class="btn btn-danger">Delete</a>
+				</div>
+			</div>
+		</div>
+	}
+</div>

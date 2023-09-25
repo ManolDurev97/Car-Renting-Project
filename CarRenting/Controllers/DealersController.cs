@@ -29,8 +29,7 @@ namespace CarRenting.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var userIsDealer = date
-                .Dealers.Any(u => u.UserId == userId);
+            var userIsDealer = IsDealer(userId);
 
             if (userIsDealer)
             {
@@ -55,5 +54,8 @@ namespace CarRenting.Controllers
 
             return RedirectToAction("All","Car");
         }
+
+        public bool IsDealer(string userId)
+            => date.Dealers.Any(u => u.UserId == userId);
     }
 }

@@ -13,6 +13,8 @@
 
 		public string ImageUrl { get; set; }
 
+		public bool IsPublic { get; set; } = true;
+
 		public int Year { get; set; }
 		public string Category { get; set; }
 	}

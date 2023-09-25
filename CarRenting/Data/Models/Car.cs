@@ -26,7 +26,9 @@
 
         public int CategoryId { get; set; }
 
-        public Category Category { get; set; }
+        public bool IsPublic { get; set; } = true;
+
+		public Category Category { get; set; }
 
 
         public int DealerId { get; set; }
