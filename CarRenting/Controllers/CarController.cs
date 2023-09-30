@@ -175,10 +175,118 @@
             return View(cars);
         }
 
-        public IActionResult Edit()
+        [Authorize]
+        public IActionResult Edit(int id)
         {
-            return View();
-        }
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var dealerId = data.Dealers
+                .Where(u => u.UserId == userId)
+                .Select(d => d.Id)
+                .FirstOrDefault();
+
+            if (dealerId == 0)
+            {
+                return RedirectToAction();
+            }
+
+            var car = Details(id);
+
+            if (car.UserId != userId)
+            {
+                return BadRequest();
+            }
+
+			var allCategories = data.Categories
+                .Select(c => new CarCategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList();
+
+			return View(new AddCarFormModel
+            {
+                Brand = car.Brand,
+                Model = car.Model,
+                Description = car.Description,
+                ImageUrl = car.ImageUrl,
+                Year = car.Year,
+                CategoryId = car.CategoryId,
+                Categories = allCategories
+			});
+
+		}
+
+		[HttpPost]
+		[Authorize]
+		public IActionResult Edit(int id, AddCarFormModel car)
+		{
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+			var dealerId = data.Dealers
+				.Where(u => u.UserId == userId)
+				.Select(d => d.Id)
+				.FirstOrDefault();
+
+			if (dealerId == 0)
+			{
+				return RedirectToAction();
+			}
+
+			if (!data.Categories.Any(c => c.Id == car.CategoryId))
+			{
+				ModelState.AddModelError(nameof(car.CategoryId), "Category does not exist");
+			}
+
+			if (!ModelState.IsValid)
+			{
+				car.Categories = GetCarCategory();
+
+				return View(car);
+			}
+
+            var currCar = data.Cars.Find(id);
+
+            if (currCar == null) 
+            {
+                return NotFound(); 
+            }
+
+            //dali dilurite sa ednakvi
+
+            currCar.Id = car.Id;
+            currCar.Brand = car.Brand;
+            currCar.Model = car.Model;
+            currCar.Description = car.Description;
+            currCar.ImageUrl = car.ImageUrl;
+            currCar.Year = car.Year;
+            currCar.IsPublic = true;
+            currCar.CategoryId = car.CategoryId;
+            currCar.DealerId = dealerId;
+
+            data.SaveChanges();
+            return RedirectToAction(nameof(All));
+		}
+
+		public CarDetailsModel Details(int id)
+            => this.data.Cars
+                .Where(c => c.Id == id)
+                .Select(c => new CarDetailsModel
+                {
+                    Id = c.Id,
+                    Model = c.Model,
+                    Brand = c.Brand,
+                    Description = c.Description,
+                    ImageUrl = c.ImageUrl,
+                    Year = c.Year,
+                    Category = c.Category.Name,
+                    DealerId = c.DealerId,
+                    DealerName = c.Dealer.Name,
+                    UserId = c.Dealer.UserId
+                })
+                .FirstOrDefault();
+        
 
 		public IActionResult Delete(int id)
 		{

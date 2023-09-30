@@ -28,6 +28,7 @@
         public IActionResult Index()
         {
            var cars = data.Cars
+                .Where(c => c.IsPublic == true)
                 .OrderByDescending(cars => cars.Id)
                 .Select(c => new CarIndexViewModel()
                 {

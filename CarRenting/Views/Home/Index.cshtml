@@ -5,7 +5,7 @@
 }
 
 @{
-    var cars = Model.Cars.Where(c => c.IsPublic == true).ToList();
+    var cars = Model.Cars.ToList();
     var firstCar = cars.Count() != 0 ? cars[0] : null;
     var secondCar = cars.Count > 1 ? cars[1] : null;
     var thirdCar = cars.Count > 2 ? cars[2] : null;

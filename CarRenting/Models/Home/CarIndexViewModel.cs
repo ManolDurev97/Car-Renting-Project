@@ -7,7 +7,7 @@
 
         public string Model { get; set; }
 
-        public bool IsPublic { get; set; }
+        public bool IsPublic { get; set; } = true;
 
         public string ImageUrl { get; set; }
 
