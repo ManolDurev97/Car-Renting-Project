@@ -254,6 +254,10 @@
             }
 
             //dali dilurite sa ednakvi
+            if (currCar.DealerId != dealerId)
+            {
+                return BadRequest();
+            }
 
             currCar.Id = car.Id;
             currCar.Brand = car.Brand;

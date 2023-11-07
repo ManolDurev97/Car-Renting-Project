@@ -13,7 +13,7 @@ namespace CarRenting.Services.Statistics
 
 		public StatisticsServiceModel Total()
 		{
-			var totalCars = data.Cars.Count();
+			var totalCars = data.Cars.Where(c => c.IsPublic == true).Count();
 			var totalUsers = data.Users.Count();
 
 			return new StatisticsServiceModel()

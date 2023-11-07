@@ -2,6 +2,7 @@
 using CarRenting.Data.Models;
 using CarRenting.Models.Daeler;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -48,9 +49,16 @@ namespace CarRenting.Controllers
                 UserId = userId
 
             };
-
+            
             date.Dealers.Add(currDealer);
             date.SaveChanges();
+
+            var user = date.Users.FirstOrDefault(u => u.Id == userId);
+            if (user != null)
+            {
+                user.IsDealer = true;
+                date.SaveChanges();
+            }
 
             return RedirectToAction("All","Car");
         }

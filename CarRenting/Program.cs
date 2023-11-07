@@ -1,8 +1,13 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using CarRenting.Data;
 namespace CarRenting
 {
     using CarRenting.Data;
+	using CarRenting.Data.Models;
 	using CarRenting.Services.Statistics;
 	using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     public class Program
     {
@@ -15,7 +20,7 @@ namespace CarRenting
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options
+            builder.Services.AddDefaultIdentity<User>(options
                 =>
             {
                 options.Password.RequireNonAlphanumeric = false;
@@ -23,10 +28,16 @@ namespace CarRenting
                 options.Password.RequireLowercase = false;
                 options.Password.RequireDigit = false;
             })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<CarRentingDbContext>();
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+            });
             
             builder.Services.AddTransient<IStatisticsService, StatisticsService>();
+
+
             
             var app = builder.Build();
 
